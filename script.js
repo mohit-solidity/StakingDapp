@@ -20,10 +20,52 @@ async function connect(){
     console.log(`Wallet Connected To : ${address}`)
     alert("Wallet Connected To : "+address);
     poolbalance();
+    switchToSepolia();
   }else{
     alert("Please Install Metamask");
   }
 }
+async function switchToSepolia() {
+  if (!window.ethereum) {
+    alert("MetaMask is not installed!");
+    return;
+  }
+
+  try {
+    // Try to switch to Sepolia
+    await window.ethereum.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId: '0xaa36a7' }], // Sepolia chainId in hex
+    });
+    alert("✅ Switched to Sepolia Testnet");
+  } catch (switchError) {
+    // If Sepolia not added, add it
+    if (switchError.code === 4902) {
+      try {
+        await window.ethereum.request({
+          method: 'wallet_addEthereumChain',
+          params: [{
+            chainId: '0xaa36a7',
+            chainName: 'Sepolia Testnet',
+            nativeCurrency: {
+              name: 'Sepolia ETH',
+              symbol: 'ETH',
+              decimals: 18
+            },
+            rpcUrls: ['https://rpc.sepolia.org'],
+            blockExplorerUrls: ['https://sepolia.etherscan.io']
+          }]
+        });
+        alert("✅ Sepolia network added!");
+      } catch (addError) {
+        alert("❌ Failed to add Sepolia network: " + addError.message);
+      }
+    } else {
+      alert("❌ Failed to switch network: " + switchError.message);
+    }
+  }
+}
+
 function parseRevertMessage(error) {
     if (error?.error?.message) return error.error.message;
     if (error?.data?.message) return error.data.message;
@@ -118,3 +160,4 @@ async function calculateReward(){
   let reward = await contract.calculateMyReward();
   alert(`Your Staked Balance : ${ethers.utils.formatEther(stakedBalance)}ETH\nYour Reward : ${ethers.utils.formatEther(reward)}ETH`)
 }
+poolbalance();
