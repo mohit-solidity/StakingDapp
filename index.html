@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="style.css">
+  <title>Staking App</title>
+</head>
+<body>
+  <div id="container">
+    <h1>Staking DApp</h1>
+
+    <button onclick="connect()">Connect Wallet</button>
+
+    <div class="input-group">
+      <input id="amount" type="text" placeholder="Amount" required>
+      <span>ETH</span>
+    </div>
+
+    <button onclick="stake()">Stake</button>
+    <button onclick="myStake()">My Stake</button>
+    <button onclick="unstake()">Unstake</button>
+    <button onclick="calculateReward()">Calculate Reward</button>
+
+    <p id="balance">Pool Balance: __ ETH</p>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <script src="test.js"></script>
+</body>
+</html>
