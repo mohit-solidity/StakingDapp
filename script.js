@@ -26,11 +26,48 @@ async function connect(){
     contract = new ethers.Contract(contractAddress,abi,signer);
     console.log(`Wallet Connected To : ${userAddress}`)
     alert("Wallet Connected To : "+userAddress);
+    switchToSepolia();
     await poolbalance();
   }else{
     alert("Please Install Metamask");
   }
 }
+// Force switch to Sepolia network
+async function switchToSepolia(){
+  try {
+    await window.ethereum.request({
+      method: "wallet_switchEthereumChain",
+      params: [{ chainId: "0xaa36a7" }], // Sepolia chainId in hex
+    });
+    alert("Switched To Sepolia");
+  } catch (switchError) {
+    // This error code means the chain has not been added to MetaMask
+    if (switchError.code === 4902) {
+      try {
+        await window.ethereum.request({
+          method: "wallet_addEthereumChain",
+          params: [{
+            chainId: "0xaa36a7",
+            chainName: "Sepolia Testnet",
+            nativeCurrency: {
+              name: "SepoliaETH",
+              symbol: "ETH",
+              decimals: 18
+            },
+            rpcUrls: ["https://rpc.sepolia.org/"],
+            blockExplorerUrls: ["https://sepolia.etherscan.io"]
+          }],
+        });
+        alert("Seitched To Sepolia");
+      } catch (addError) {
+        alert("Failed to add Sepolia: " + addError.message);
+      }
+    } else {
+      alert("Switch to Sepolia failed: " + switchError.message);
+    }
+  }
+}
+
 async function checkWalletIsConnected(){
   if(!contract){
     throw new Error("Please Connect Wallet First");
@@ -51,7 +88,7 @@ async function unstake(){
       let tx = await contract.unstake();
       await tx.wait();
     alert("Unstaking Successful");
-      poolbalance();
+    poolbalance();
     }catch(err){
       alert(`Error Unstaking : ${err.message}`);
     }
