@@ -51,6 +51,7 @@ async function unstake(){
       let tx = await contract.unstake();
       await tx.wait();
     alert("Unstaking Successful");
+      poolbalance();
     }catch(err){
       alert(`Error Unstaking : ${err.message}`);
     }
