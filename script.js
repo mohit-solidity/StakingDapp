@@ -42,7 +42,7 @@ async function unstake(){
     await checkWalletIsConnected();
     let poolbalance = await contract.getBalance();
     userAddress = await signer.getAddress();
-    let userBalance = await signer.getBalance();
+    let userBalance = await contract.balance(userAddress);
     if(poolbalance.lt(userBalance)){
       alert("Pool Balance Is Not Enough To Unstake");
       return;
